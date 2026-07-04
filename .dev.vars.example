@@ -1,0 +1,8 @@
+# Copy to .dev.vars (or export in your shell) to run against a real MailKite account.
+# Leave both unset and the demo dry-runs: sends are logged, the webhook uses a demo secret.
+
+# Your MailKite API key — one key, reused across every domain and project.
+MAILKITE_API_KEY=
+
+# Your account's webhook signing secret, for verifying inbound email.received events.
+MAILKITE_WEBHOOK_SECRET=
