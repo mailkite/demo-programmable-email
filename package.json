@@ -16,6 +16,6 @@
   },
   "dependencies": {
     "express": "^4",
-    "mailkite": "^0.11.0"
+    "mailkite": "^0.12.0"
   }
 }
