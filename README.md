@@ -39,23 +39,31 @@ Expected output:
 [dry-run] would send { from: 'noreply@weekend-test-c.app', to: 'you@example.com', subject: 'Ping' }
 ```
 
-Then the inbound half — one webhook that dispatches to the right project. In two terminals:
+Then the inbound half — one webhook that dispatches to the right project. One command
+boots the dispatcher and self-fires a signed `email.received` event at its own localhost
+(no domain, no second terminal):
 
 ```sh
-node server.mjs                      # terminal 1 → listening on :3000/hooks/email
-node fire-sample-event.mjs           # terminal 2 → fires a signed email.received event
+npm start       # boots the dispatcher, self-fires a signed email.received event, stays up
 ```
 
-`fire-sample-event.mjs` sends a message addressed to `support@startup-b.io`, so the
-dispatcher routes it to that project. Terminal 1 logs:
+The sample event is addressed to `support@startup-b.io`, so the dispatcher routes it to
+that project and prints the whole round trip:
 
 ```
+listening on http://localhost:3000/hooks/email
+
 [startup-b.io] opened a support ticket from ada@example.com: "Re: invoice #1042"
+
+— self-fired one signed email.received event → 200 ok
+  server's still up: POST your own events to :3000/hooks/email, or point real email here.
 ```
 
-and terminal 2 prints `→ 200 ok`. Tamper with the body or the secret and the server
-answers `401`. `npm test` runs the signature vectors (valid, wrong secret, tampered
-body, replayed timestamp, malformed header) plus an SDK/raw parity check.
+Want the halves separately? `npm run serve` runs just the dispatcher, and
+`npm run fire-sample-event` fires the event from another terminal. Tamper with the body
+or the secret and the server answers `401`. `npm test` runs the signature vectors
+(valid, wrong secret, tampered body, replayed timestamp, malformed header) plus an
+SDK/raw parity check.
 
 ## How it works
 

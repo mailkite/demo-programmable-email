@@ -52,4 +52,12 @@ function replyWithAI(msg) {
   console.log(`[weekend-test-c.app] drafting an AI reply to ${msg.from.address}: "${msg.subject}"`);
 }
 
-app.listen(PORT, () => console.log(`listening on http://localhost:${PORT}/hooks/email`));
+// Auto-listen only when run directly (`node server.mjs`), not when imported by
+// demo.mjs — importing the app must not also bind the port.
+import { fileURLToPath } from "node:url";
+const isMain = process.argv[1] === fileURLToPath(import.meta.url);
+if (isMain && process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => console.log(`listening on http://localhost:${PORT}/hooks/email`));
+}
+
+export { app };
